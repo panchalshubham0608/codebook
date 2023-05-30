@@ -2,44 +2,30 @@
 const express = require('express');
 const router = express.Router();
 const validateProblem = require('../util/validation');
+const sample_problem = require('../util/sample_problem');
 
 // the problem object
-let current_problem = {
-  "title": "Compute the sum",
-  "description": "Write a program to input two integers A and B from user and output the value of expression  `$$A^2 + B^2$$`\n\n**Input Format:** Two space separated integers A and B\n\n**Output Format:** Single line of output containing the value of the given expression.\n\n\n**Example**\n```\n1 2\n5\n```",
-  "supported_languages": [
-      "c",
-      "cpp"
-  ],
-  "test_cases": [
-      {
-          "input": "1 2\n",
-          "output": "5\n",
-          "score": 2,
-          "timeout": 1000,
-          "locked": false
-      },
-      {
-          "input": "2 2\n",
-          "output": "8\n",
-          "score": 2,
-          "timeout": 1000,
-          "locked": true
-      },
-      {
-          "input": "2 3\n",
-          "output": "13\n",
-          "score": 2,
-          "timeout": 1000,
-          "locked": true
-      }
-  ],
-  "templates": []
-}
+let current_problem = sample_problem;
 
 // GET /api/problem
 router.get('/problem', function(req, res, next) {
-  res.send('respond with a resource');
+  // check if problem is set
+  if (!current_problem) {
+    // redirect to home page
+    res.redirect('/');
+    return;
+  }
+  // take a deep copy of the problem object
+  let problem = JSON.parse(JSON.stringify(current_problem));
+  // for locked test cases, drop the input and output
+  for (let i = 0; i < problem.test_cases.length; i++) {
+    if (problem.test_cases[i].locked) {
+      delete problem.test_cases[i].input;
+      delete problem.test_cases[i].output;
+    }
+  }
+  // render the problem page
+  res.render('problem', { problem: problem });
 });
 
 // POST /api/problem
@@ -59,7 +45,7 @@ router.post('/problem', function(req, res, next) {
     return;
   }
   // set the problem object
-  current_problem = problem;
+  current_problem = JSON.parse(String(problem));
   // send success response
   res.status(200).json({ message: 'Problem set successfully' });
 });

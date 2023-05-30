@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // handle response
                 xhr.onload = () => {
                     if (xhr.status == 200) {
-                        alert('Problem set successfully');
+                        // redirect to /api/problem
+                        window.location.href = '/api/problem';
                     } else if (xhr.status == 400) {
                         alert(`Error: ${JSON.parse(xhr.responseText).error}`);
                     } else {
