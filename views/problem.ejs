@@ -44,7 +44,7 @@
                     %>
                     <select class="form-select" id="supported_languages">
                         <% for (let lang in langs) { %>
-                            <option value="<%= lang %>"><%= langs[lang] %></option>
+                            <option value="<%= lang %>" data-template="<%= problem.templates && problem.templates[lang] %>"><%= langs[lang] %></option>
                         <% } %>
                     </select>    
                 </div>

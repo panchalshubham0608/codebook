@@ -33,21 +33,32 @@ editor.session.setMode(`ace/mode/${getModeFromLanguage(current_language)}`);
 // update font size
 editor.setFontSize(16);
     
+// handle the language selection
+const handleSelectLanguage = (language) => {
+    // set the mode of the editor
+    current_language = language;
+    editor.session.setMode(`ace/mode/${getModeFromLanguage(current_language)}`);
+    // reset the editor
+    let option = languageSelector.options[languageSelector.selectedIndex];
+    editor.setValue(option.getAttribute('data-template'));
+    // move the cursor to the start
+    editor.gotoLine(1, 0, false);
+}
 
 // add event listener to the language selector
-languageSelector.addEventListener('change', function() {
+languageSelector.addEventListener('change', function(event) {
     // confirm the change
     if (!confirm('Changing the language will reset the code editor. Are you sure you want to continue?')) {
         // revert the change
         languageSelector.value = current_language;
         return;
     }
-    // set the mode of the editor
-    current_language = languageSelector.value;
-    editor.session.setMode(`ace/mode/${getModeFromLanguage(current_language)}`);
-    // clear the editor
-    editor.setValue('');
+    // handle the selected language
+    handleSelectLanguage(languageSelector.value);
 });
+
+// select the first language
+handleSelectLanguage(languageSelector.value);
 
 // select a test case
 function selectTestCase(testCaseNumber) {

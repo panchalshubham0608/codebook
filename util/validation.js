@@ -42,6 +42,26 @@ const validateTestCase = (testCase) => {
     if (!testCase.hasOwnProperty('locked') || typeof testCase.locked != 'boolean') {
         throw new Error('Test case must have a boolean key \'locked\'');
     }
+
+    // check if templates are present
+    if (testCase.hasOwnProperty('templates')) {
+        // check if templates is an object
+        if (typeof testCase.templates != 'object') {
+            throw new Error('\'templates\' must be an object');
+        }
+        // check if each template is a string
+        for (let key in testCase.templates) {
+            // check if the template is a string
+            if (typeof testCase.templates[key] != 'string') {
+                throw new Error(`Template for language ${key} must be a string`);
+            }
+
+            // check if key is a valid language
+            if (!ALLOWED_LANGUAGES.includes(key)) {
+                throw new Error(`Language ${key} is not supported`);
+            }
+        }
+    }
 }
 
 // validate if the list of supported languages is valid
