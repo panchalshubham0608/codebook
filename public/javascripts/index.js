@@ -13,8 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // get file and check if it is a *.json file
         let file = uploadButton.files[0];
-        if (file.name.split('.').pop() != 'json') {
+        let parts = file.name.split('.');
+        if (parts.length < 2) {
             alert('Please upload a *.json file');
+            return;
+        }
+        if (
+            // check if the file is a *.json file
+            (parts[parts.length - 1] != 'json') &&
+            // check if the file is a *.json.enc file
+            (parts[parts.length - 2] != 'json' && parts[parts.length - 1] != 'enc')
+        ) {
+            alert('Please upload a *.json or *.json.enc file');
             return;
         }
         // read the file
@@ -24,6 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
             if (reader.result == '') {
                 alert('File is empty');
                 return;
+            }
+            // get the content of the file
+            let content = String(reader.result);
+            // if file is a *.json.enc file, decrypt it
+            if (parts[parts.length - 1] == 'enc') {
+                // ask for password
+                let password = prompt('Enter password to unlock file');
+                // decrypt the file
+                try {
+                    content = CryptoJS.AES.decrypt(content, password).toString(CryptoJS.enc.Utf8);
+                } catch (err) {
+                    alert('Wrong password');
+                    window.location.href = '/';
+                    return;
+                }
             }
             // try to set the problem object at /api/problem
             // display loader
@@ -53,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 // send the request with the problem object
-                xhr.send(JSON.stringify({ problem: String(reader.result) }));
+                xhr.send(JSON.stringify({ problem: content }));
             } catch (err) {
                 console.log(err);
                 alert('Something went wrong');

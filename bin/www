@@ -89,20 +89,20 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-// terminate the app when we get a SIGTERM signal
-process.on('SIGTERM', () => {
-  console.info('SIGTERM signal received.');
-  console.log('Closing http server.');
-  server.close(() => {
-    console.log('Http server closed.');
-  });
-});
+// // terminate the app when we get a SIGTERM signal
+// process.on('SIGTERM', () => {
+//   console.info('SIGTERM signal received.');
+//   console.log('Closing http server.');
+//   server.close(() => {
+//     console.log('Http server closed.');
+//   });
+// });
 
-// terminate the app when we get a SIGINT signal
-process.on('SIGINT', () => {
-  console.info('SIGINT signal received.');
-  console.log('Closing http server.');
-  server.close(() => {
-    console.log('Http server closed.');
-  });
-});
+// // terminate the app when we get a SIGINT signal
+// process.on('SIGINT', () => {
+//   console.info('SIGINT signal received.');
+//   console.log('Closing http server.');
+//   server.close(() => {
+//     console.log('Http server closed.');
+//   });
+// });
