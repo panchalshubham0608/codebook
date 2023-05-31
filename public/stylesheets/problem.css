@@ -1,3 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;400;500;700&display=swap");
+
+body {
+    width: 100%;
+    min-height: 100vh;
+}
+
 .ql-editor {
     padding: 0px !important;
 }
@@ -8,4 +15,102 @@
 
 .ql-toolbar {
     display: none !important;
+}
+
+#codeEditorContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#codeEditor {
+    min-height: 600px;
+    flex: 1;
+}
+
+.test-case-container {
+    margin-right: 5px;
+    overflow: scroll;
+    font-family: "Nunito", sans-serif;
+    border-right: 1px solid #ccc;
+    height: 400px;
+}
+
+.test-case-wrapper {
+    border-top: 1px solid #ccc;
+}
+
+.test-case {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+    font-family: "Nunito", sans-serif;
+}
+
+.test-case-view {
+    padding: 5px;
+    flex: 1;
+}
+
+.test-case-view p {
+    white-space: pre-wrap;
+    background-color: #f5f5f5;
+    padding: 5px;
+    font-family: "Nunito", sans-serif;
+}
+
+.test-case-view label {
+    font-weight: bold;
+    font-family: "Nunito", sans-serif;
+}
+
+.loader, .passed, .failed {
+    display: none;
+}
+
+#input, #output {
+    min-height: 30px;
+}
+
+#inputOutputContainer, #lockedTestCaseContainer, #resultContainer {
+    display: none;
+}
+
+/* Loader animation */
+.loading-bar-spinner.spinner {
+    animation: loading-bar-spinner 400ms linear infinite;
+    display: inline-block;
+}
+
+.loading-bar-spinner.spinner .spinner-icon {
+    width: 15px;
+    height: 15px;
+    border:  solid 4px transparent;
+    border-top-color:  #00C8B1 !important;
+    border-left-color: #00C8B1 !important;
+    border-radius: 50%;
+}
+
+@keyframes loading-bar-spinner {
+  0%   { transform: rotate(0deg);   transform: rotate(0deg); }
+  100% { transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+.home-btn {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    border: 1px solid transparent;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #29a396;
+}
+
+.badge {
+    background-color: #29a396 !important;
+}
+
+.mb-0 {
+    margin-bottom: 0px !important;
 }
