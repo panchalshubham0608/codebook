@@ -7,7 +7,7 @@ CodeBook is a containerized Node.js application which can be used to auto-evalua
 The first thing you need to use CodeBook is a problem to solve. You can create a new problem for yourself [here](https://panchalshubham0608.github.io/codebook-problem-generator/) or browse a sample problem from [here](https://github.com/panchalshubham0608/codebook-problem-generator/blob/main/sample_problem.json).  
 Now install the CodeBook container with:  
 ```bash
-docker pull ghcr.io/panchalshubham0608/codebook:1.0.0
+docker pull ghcr.io/panchalshubham0608/codebook:1.1.0
 ```
 Start the containerized application with:
 ```bash
