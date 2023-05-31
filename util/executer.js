@@ -18,7 +18,11 @@ const createDirectory = () => {
 // deletes the directory with given path
 const deleteDirectory = (dirPath) => {
     logger.info(`Deleting directory ${dirPath}`);
-    fs.rmSync(dirPath, { recursive: true });
+    try {
+        fs.rmSync(dirPath, { recursive: true });
+    } catch (err) {
+        logger.error(`Error deleting directory ${dirPath}: ${err.message}`);
+    }
 }
 
 // generates the command to compile the source code
@@ -88,12 +92,10 @@ const executeSourceCode = ({sourceCode, language, testCase}) => {
         const { fileName, compileCommand, runCommand } = writeSourceCodeToFile(sourceCode, language, dirPath);
         // compile the source code
         if (compileCommand) {
-            logger.info(`Compiling source code ${fileName}`);
-            logger.info(`Compile command: ${compileCommand}`);
+            logger.info(`Compiling source code ${fileName} with command ${compileCommand}`);
             try {
                 const compileOutput = execSync(compileCommand, { cwd: dirPath });
-                logger.info(`Compilation successful`);
-                logger.info(`Compile output: ${compileOutput.toString()}`);
+                logger.info(`Compilation successful with output: ${compileOutput.toString()}`);
             } catch (err) {
                 // compilation failed
                 logger.error(`Compilation error: ${err}`);
@@ -106,8 +108,7 @@ const executeSourceCode = ({sourceCode, language, testCase}) => {
 
 
         // run the source code against test case
-        logger.info(`Running source code ${fileName} against test case ${testCase.input}`);
-        logger.info(`Run command: ${runCommand}`);
+        logger.info(`Running source code ${fileName} with command ${runCommand}`);
         try {
             const runOutput = execSync(runCommand, { 
                 cwd: dirPath, 
