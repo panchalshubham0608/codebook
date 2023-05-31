@@ -2,11 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const validateProblem = require('../util/validation');
-const sample_problem = require('../util/sample_problem');
+// const sample_problem = require('../util/sample_problem');
 const executeSourceCode = require('../util/executer');
 
 // the problem object
-let current_problem = sample_problem;
+let current_problem = null;
 
 // GET /api/problem
 router.get('/problem', function(req, res, next) {

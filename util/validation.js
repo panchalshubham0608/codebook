@@ -10,17 +10,17 @@ const validateTestCase = (testCase) => {
 
     // check if the input is a string
     if (!testCase.hasOwnProperty('input') || typeof testCase.input != 'string') {
-        throw new Error('Test case must have a key \'input\'');
+        throw new Error('Test case must have a string key \'input\'');
     }
 
     // check if the output is a string
     if (!testCase.hasOwnProperty('output') || typeof testCase.output != 'string') {
-        throw new Error('Test case must have a key \'output\'');
+        throw new Error('Test case must have a string key \'output\'');
     }
 
     // check if the score is a number
-    if (!testCase.hasOwnProperty('score') || typeof testCase.score != 'number') {
-        throw new Error('Test case must have a key \'score\'');
+    if (!testCase.hasOwnProperty('score') || typeof testCase.score != 'number') {        
+        throw new Error('Test case must have a numeric key \'score\'');
     }
 
     // check if the score is a positive number
@@ -30,7 +30,7 @@ const validateTestCase = (testCase) => {
 
     // check if the timeout is a number
     if (!testCase.hasOwnProperty('timeout') || typeof testCase.timeout != 'number') {
-        throw new Error('Test case must have a key \'timeout\'');
+        throw new Error('Test case must have a numeric key \'timeout\'');
     }
 
     // check if the timeout is a positive number
@@ -40,7 +40,7 @@ const validateTestCase = (testCase) => {
 
     // check if the locked is a boolean
     if (!testCase.hasOwnProperty('locked') || typeof testCase.locked != 'boolean') {
-        throw new Error('Test case must have a key \'locked\'');
+        throw new Error('Test case must have a boolean key \'locked\'');
     }
 }
 

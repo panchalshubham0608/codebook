@@ -27,14 +27,14 @@ const sample_problem = {
         {
             "input": "1 1\n",
             "output": "2\n",
-            "score": "3",
+            "score": 3,
             "timeout": 1000,
             "locked": true
         },
         {
             "input": "0 0\n",
             "output": "0\n",
-            "score": "3",
+            "score": 3,
             "timeout": 1000,
             "locked": true
         }
