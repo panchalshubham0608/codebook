@@ -10,6 +10,7 @@ function getModeFromLanguage(language) {
 }
 // current language used
 let current_language = null;
+let previously_selected_test_case = null;
 
 // construct the quill editor
 let quill = new Quill('#problemContainer', {
@@ -51,6 +52,11 @@ languageSelector.addEventListener('change', function() {
 // select a test case
 function selectTestCase(testCaseNumber) {
     let container = document.getElementById(`test_case_${testCaseNumber}`);
+    container.classList.add('test-case-selected');
+    if (previously_selected_test_case) {
+        previously_selected_test_case.classList.remove('test-case-selected');
+    }
+    previously_selected_test_case = container;
     let locked = container.getAttribute('data-locked');
     if (locked === 'true') {
         document.getElementById('inputOutputContainer').style.display = 'none';
@@ -61,6 +67,7 @@ function selectTestCase(testCaseNumber) {
     }
     // update the output
     document.getElementById('youroutput').innerHTML = container.getAttribute('data-user-output');
+    document.getElementById('result').innerHTML = container.getAttribute('data-result');
 }
 
 // handles the code submission
@@ -88,8 +95,19 @@ function handleCodeSubmission() {
                 if (xhr.status === 200) {
                     let response = JSON.parse(xhr.responseText);
                     // update the output
+                    let responseText = "";
+                    switch (response.status) {
+                        case 'AC': responseText = 'Accepted'; break;
+                        case 'WA': responseText = 'Wrong Answer'; break;
+                        case 'TLE': responseText = 'Time Limit Exceeded'; break;
+                        case 'RE': responseText = 'Runtime Error'; break;
+                        case 'CE': responseText = 'Compilation Error'; break;
+                        default: responseText = 'Unknown Error';
+                    }
+                    // update the output
                     testCaseContainer.setAttribute('data-user-output', response.output || '');
-                    if (response.message === 'Ok') {
+                    testCaseContainer.setAttribute('data-result', responseText);
+                    if (response.status === 'AC') {
                         // show the passed item
                         testCaseContainer.querySelector('.passed').style.display = 'inline-block';
                         // resolve the promise
@@ -122,6 +140,7 @@ function handleCodeSubmission() {
 
     // wait for all the promises to resolve
     let resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = '';
     Promise.all(promises).then(function() {
         // all test cases have been executed and passed
         resultContainer.innerHTML = `
@@ -131,8 +150,11 @@ function handleCodeSubmission() {
     }).catch(function() {
         // some test cases failed
         resultContainer.innerHTML = `
-        <p class="alert alert-danger">Wrong Answer</p>
+        <p class="alert alert-danger">Not yet there. Keep trying!</p>
         `
         resultContainer.style.display = 'block';
+    }).finally(function() {
+        // click the first test case
+        document.getElementById('test_case_1').click();
     });
 }

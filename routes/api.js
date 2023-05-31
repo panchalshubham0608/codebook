@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const validateProblem = require('../util/validation');
 const sample_problem = require('../util/sample_problem');
+const executeSourceCode = require('../util/executer');
 
 // the problem object
 let current_problem = sample_problem;
@@ -91,12 +92,18 @@ router.post('/execute', function(req, res, next) {
     return;
   }
 
-  // wait for 1 second
-  setTimeout(function() {
-    // return success response
-    res.status(200).json({ message: 'Ok' });
-  }, 2000);
 
+  // retrieve the test case
+  let testCase = current_problem.test_cases[testCaseNumber - 1];
+  // execute the code against the test case
+  let result = executeSourceCode({ sourceCode: code, language, testCase });
+  // if the test case is locked, drop the input and output
+  if (testCase.locked) {
+    delete result.input;
+    delete result.expectedOutput;
+  }
+  // send the result
+  res.status(200).json({ ...result });
 });
 
 // export the router

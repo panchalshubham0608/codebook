@@ -47,6 +47,11 @@ body {
     font-family: "Nunito", sans-serif;
 }
 
+.test-case-selected {
+    box-shadow: 0px 0px 5px 0px #ccc;
+    background-color: #f5f5f5;
+}
+
 .test-case-view {
     padding: 5px;
     flex: 1;

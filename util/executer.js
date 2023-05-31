@@ -78,31 +78,9 @@ const writeSourceCodeToFile = (sourceCode, language, dirPath) => {
     }
 };
 
-// get the test cases for given problemId
-const getTestCases = (problemId) => {
-    // remove the trailing file extension
-    problemId = problemId.replace(".md", ".js")
-    let module = path.join(__dirname, '..', 'problems', problemId);
-    if (!fs.existsSync(module)) throw new Error('A solution for the given problem does not exist! Try again later.\n');
-    return require(module);
-};
-
-
 // Execute user's source code for given language
 // and validate the output against given problemId
-const executeSourceCode = ({sourceCode, language, problemId, timeout = 2*1000}) => {
-    // get the test cases for given problemId
-    let testCases = null;
-    try {
-        testCases = getTestCases(problemId);
-    } catch (err) {
-        return {
-            status: 'error',
-            message: err.message
-        };
-    }
-
-
+const executeSourceCode = ({sourceCode, language, testCase}) => {
     // create a directory to store the source code
     const dirPath = createDirectory();
     try {
@@ -110,82 +88,74 @@ const executeSourceCode = ({sourceCode, language, problemId, timeout = 2*1000}) 
         const { fileName, compileCommand, runCommand } = writeSourceCodeToFile(sourceCode, language, dirPath);
         // compile the source code
         if (compileCommand) {
-            console.log(`Compiling source code ${fileName}`);
-            console.log(`Compile command: ${compileCommand}`);
+            logger.info(`Compiling source code ${fileName}`);
+            logger.info(`Compile command: ${compileCommand}`);
             try {
                 const compileOutput = execSync(compileCommand, { cwd: dirPath });
-                console.log(compileOutput.toString());
+                logger.info(`Compilation successful`);
+                logger.info(`Compile output: ${compileOutput.toString()}`);
             } catch (err) {
                 // compilation failed
-                console.log(`Compilation error: ${err}`);
+                logger.error(`Compilation error: ${err}`);
                 return {
                     status: 'CE',
-                    message: err.message
+                    output: err.message
                 }
             }
         }
 
 
-        // run the source code against each test case
-        let result = [];
-        for (let testCase of testCases) {
-            console.log(`Running source code ${fileName} against test case ${testCase.input}`);
-            console.log(`Run command: ${runCommand}`);
-            try {
-                const runOutput = execSync(runCommand, { 
-                    cwd: dirPath, 
+        // run the source code against test case
+        logger.info(`Running source code ${fileName} against test case ${testCase.input}`);
+        logger.info(`Run command: ${runCommand}`);
+        try {
+            const runOutput = execSync(runCommand, { 
+                cwd: dirPath, 
+                input: testCase.input,
+                timeout: testCase.timeout
+            });
+            if (runOutput.toString().trim() !== testCase.output.trim()) {
+                // output is incorrect
+                return {
+                    status: 'WA',
                     input: testCase.input,
-                    timeout: timeout
-                });
-                if (runOutput.toString().trim() !== testCase.output.trim()) {
-                    // output is incorrect
-                    result.push({
-                        status: 'WA',
-                        input: testCase.input,
-                        output: runOutput.toString().trim(),
-                        expectedOutput: testCase.output
-                    });
-                } else {
-                    // output is correct
-                    result.push({
-                        status: 'AC',
-                        input: testCase.input,
-                        output: runOutput.toString().trim(),
-                        expectedOutput: testCase.output
-                    });
-                }
-            } catch (err) {
-                // execution failed
-                console.log(`Execution error:\n${err}`);
-                if (err.signal === 'SIGTERM') {
-                    // execution timed out
-                    result.push({
-                        status: 'TLE',
-                        input: testCase.input,
-                        output: '',
-                        expectedOutput: testCase.output
-                    });
-                } else {
-                    result.push({
-                        status: 'RE',
-                        input: testCase.input,
-                        output: err.message,
-                        expectedOutput: testCase.output
-                    });    
-                }
+                    output: runOutput.toString().trim(),
+                    expectedOutput: testCase.output
+                };
+            } else {
+                // output is correct
+                return {
+                    status: 'AC',
+                    input: testCase.input,
+                    output: runOutput.toString().trim(),
+                    expectedOutput: testCase.output
+                };
+            }
+        } catch (err) {
+            // execution failed
+            logger.info(`Execution error:\n${err}`);
+            if (err.signal === 'SIGTERM') {
+                // execution timed out
+                return {
+                    status: 'TLE',
+                    input: testCase.input,
+                    output: '',
+                    expectedOutput: testCase.output
+                };
+            } else {
+                return {
+                    status: 'RE',
+                    input: testCase.input,
+                    output: err.message,
+                    expectedOutput: testCase.output
+                };    
             }
         }
-
-        // return the result
-        return {
-            status: 'OK',
-            testCases: result
-        };
     } catch (err) {
         // some error occured
         return {
             status: 'error',
-            message: err.message
+            output: err.message
         };
     } finally {
         // delete the directory
