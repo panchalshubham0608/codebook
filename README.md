@@ -11,7 +11,7 @@ docker pull ghcr.io/panchalshubham0608/codebook:latest
 ```
 Start the containerized application with:
 ```bash
-docker run -p 8080:8080 -it codebook
+docker run -p 8080:8080 -it ghcr.io/panchalshubham0608/codebook:latest
 ```
 
 Browse http://localhost:8080 to get started. You should see the following landing page:
