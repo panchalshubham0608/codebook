@@ -49,7 +49,7 @@
                     </select>    
                 </div>
                 <div class="col" style="text-align: right;">
-                    <button class="btn btn-success">Run</button>
+                    <button class="btn btn-success" onclick="javascript:handleCodeSubmission()">Run</button>
                 </div>
             </div>
             <!-- the code editor -->
@@ -64,6 +64,7 @@
                     %>
                     <div class="test-case" id="test_case_<%= i + 1 %>"
                         data-locked="<%= test_case.locked %>"
+                        data-user-output="Make a submission to see your output here"
                         <% if (!test_case.locked) { %>
                             data-input="<%= test_case.input %>"
                             data-output="<%= test_case.output %>"                                
@@ -88,21 +89,19 @@
                     <% } %>
                 </div>
                 <div class="test-case-view">
-                    <div id="testCaseInstructions">
-                        <p>Select a test case to view its input and output.</p>
-                    </div>
                     <div id="inputOutputContainer" class="row">
                         <div class="col">
                             <label for="input">Input</label>
                             <p id="input"></p>
                         </div>
                         <div class="col">
-                            <label for="output">Output</label>
+                            <label for="output">Expected Output</label>
                             <p id="output"></p>
                         </div>
                     </div>
-                    <div id="lockedTestCaseContainer">
-                        <p>This test case is locked!</p>
+                    <div class="col">
+                        <label for="youroutput">Your Output</label>
+                        <p id="youroutput">Make a submission to see your output here</p>
                     </div>
                 </div>
             </div>

@@ -11,44 +11,41 @@ function getModeFromLanguage(language) {
 // current language used
 let current_language = null;
 
-// add elements
-document.addEventListener('DOMContentLoaded', function() {
-    // construct the quill editor
-    let quill = new Quill('#problemContainer', {
-        theme: 'snow',
-        modules: {
-            syntax: true,
-            formula: true,
-            toolbar: [],
-        },
-    });
-    // disable editing
-    quill.enable(false);
+// construct the quill editor
+let quill = new Quill('#problemContainer', {
+    theme: 'snow',
+    modules: {
+        syntax: true,
+        formula: true,
+        toolbar: [],
+    },
+});
+// disable editing
+quill.enable(false);
 
-    // construct the ace editor
-    let editor = ace.edit('codeEditor');
-    editor.setTheme('ace/theme/eclipse');
-    let languageSelector = document.getElementById('supported_languages');
+// construct the ace editor
+let editor = ace.edit('codeEditor');
+editor.setTheme('ace/theme/eclipse');
+let languageSelector = document.getElementById('supported_languages');
+current_language = languageSelector.value;
+editor.session.setMode(`ace/mode/${getModeFromLanguage(current_language)}`);
+// update font size
+editor.setFontSize(16);
+    
+
+// add event listener to the language selector
+languageSelector.addEventListener('change', function() {
+    // confirm the change
+    if (!confirm('Changing the language will reset the code editor. Are you sure you want to continue?')) {
+        // revert the change
+        languageSelector.value = current_language;
+        return;
+    }
+    // set the mode of the editor
     current_language = languageSelector.value;
     editor.session.setMode(`ace/mode/${getModeFromLanguage(current_language)}`);
-    // update font size
-    editor.setFontSize(16);
-        
-
-    // add event listener to the language selector
-    languageSelector.addEventListener('change', function() {
-        // confirm the change
-        if (!confirm('Changing the language will reset the code editor. Are you sure you want to continue?')) {
-            // revert the change
-            languageSelector.value = current_language;
-            return;
-        }
-        // set the mode of the editor
-        current_language = languageSelector.value;
-        editor.session.setMode(`ace/mode/${getModeFromLanguage(current_language)}`);
-        // clear the editor
-        editor.setValue('');
-    });
+    // clear the editor
+    editor.setValue('');
 });
 
 // select a test case
@@ -57,13 +54,85 @@ function selectTestCase(testCaseNumber) {
     let locked = container.getAttribute('data-locked');
     if (locked === 'true') {
         document.getElementById('inputOutputContainer').style.display = 'none';
-        document.getElementById('lockedTestCaseContainer').style.display = 'block';
     } else {
         document.getElementById('inputOutputContainer').style.display = 'block';
-        document.getElementById('lockedTestCaseContainer').style.display = 'none';
         document.getElementById('input').innerHTML = container.getAttribute('data-input');
         document.getElementById('output').innerHTML = container.getAttribute('data-output');
     }
-    // hide the test case instructions
-    document.getElementById('testCaseInstructions').style.display = 'none';
+    // update the output
+    document.getElementById('youroutput').innerHTML = container.getAttribute('data-user-output');
+}
+
+// handles the code submission
+function handleCodeSubmission() {
+    // get list of test cases
+    let testCases = document.querySelectorAll('.test-case');
+    let promises = [];
+    // for each test case, make a request to the server
+    for (let i = 0; i < testCases.length; i++) {
+        // create a new promise
+        let p = new Promise(function(resolve, reject) {
+            let testCaseContainer = testCases[i];
+            // hide the passed/failed items
+            testCaseContainer.querySelector('.passed').style.display = 'none';
+            testCaseContainer.querySelector('.failed').style.display = 'none';
+            // show the loading item
+            testCaseContainer.querySelector('.loader').style.display = 'inline-block';
+            // make a new request
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/execute');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                // hide the loader
+                testCaseContainer.querySelector('.loader').style.display = 'none';
+                if (xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);
+                    // update the output
+                    testCaseContainer.setAttribute('data-user-output', response.output || '');
+                    if (response.message === 'Ok') {
+                        // show the passed item
+                        testCaseContainer.querySelector('.passed').style.display = 'inline-block';
+                        // resolve the promise
+                        resolve();
+                    } else {
+                        // show the failed item
+                        testCaseContainer.querySelector('.failed').style.display = 'inline-block';
+                        // reject the promise
+                        reject();
+                    }
+                }
+            };
+            xhr.onerror = function() {
+                // hide loader
+                testCaseContainer.querySelector('.loader').style.display = 'none';
+                // show output
+                testCaseContainer.setAttribute('data-user-output', response.output);
+                // reject the promise
+                reject();
+            };
+            xhr.send(JSON.stringify({
+                code: editor.getValue(),
+                language: current_language,
+                testCaseNumber: i + 1,
+            }));    
+        });
+        // add the promise to the list
+        promises.push(p);
+    }
+
+    // wait for all the promises to resolve
+    let resultContainer = document.getElementById('resultContainer');
+    Promise.all(promises).then(function() {
+        // all test cases have been executed and passed
+        resultContainer.innerHTML = `
+        <p class="alert alert-success">Accepted</p>
+        `
+        resultContainer.style.display = 'block';
+    }).catch(function() {
+        // some test cases failed
+        resultContainer.innerHTML = `
+        <p class="alert alert-danger">Wrong Answer</p>
+        `
+        resultContainer.style.display = 'block';
+    });
 }

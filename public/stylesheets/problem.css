@@ -68,11 +68,11 @@ body {
     display: none;
 }
 
-#input, #output {
-    min-height: 30px;
+#inputOutputContainer p, #youroutput {
+    min-height: 30px !important;
 }
 
-#inputOutputContainer, #lockedTestCaseContainer, #resultContainer {
+#inputOutputContainer, #resultContainer {
     display: none;
 }
 
