@@ -85,7 +85,13 @@ function selectTestCase(testCaseNumber) {
 function handleCodeSubmission() {
     // get list of test cases
     let testCases = document.querySelectorAll('.test-case');
+    let maxScore = 0;
+    for (let i = 0; i < testCases.length; i++) maxScore += parseInt(testCases[i].getAttribute("data-score"));
     let promises = [];
+    let score = 0;
+    // disable the submit button
+    document.getElementById("submitBtn").style.display = "none";
+    document.getElementById("submitLoader").style.display = "inline-block";
     // for each test case, make a request to the server
     for (let i = 0; i < testCases.length; i++) {
         // create a new promise
@@ -108,7 +114,7 @@ function handleCodeSubmission() {
                     // update the output
                     let responseText = "";
                     switch (response.status) {
-                        case 'AC': responseText = 'Accepted'; break;
+                        case 'AC': responseText = 'Accepted'; score += parseInt(testCaseContainer.getAttribute("data-score"));
                         case 'WA': responseText = 'Wrong Answer'; break;
                         case 'TLE': responseText = 'Time Limit Exceeded'; break;
                         case 'RE': responseText = 'Runtime Error'; break;
@@ -152,20 +158,26 @@ function handleCodeSubmission() {
     // wait for all the promises to resolve
     let resultContainer = document.getElementById('resultContainer');
     resultContainer.innerHTML = '';
-    Promise.all(promises).then(function() {
+    Promise.allSettled(promises).then(function(result) {
+        // check if all promises are fullfilled
+        for (let i = 0; i < result.length; i++)
+            if (result[i].status !== 'fulfilled')
+                throw new Error("Not yet there!");
         // all test cases have been executed and passed
         resultContainer.innerHTML = `
-        <p class="alert alert-success">Accepted</p>
+        <p class="alert alert-success">[${score}/${maxScore}] Accepted</p>
         `
         resultContainer.style.display = 'block';
     }).catch(function() {
         // some test cases failed
         resultContainer.innerHTML = `
-        <p class="alert alert-danger">Not yet there. Keep trying!</p>
+        <p class="alert alert-danger">[${score}/${maxScore}] Not yet there. Keep trying!</p>
         `
         resultContainer.style.display = 'block';
     }).finally(function() {
         // click the first test case
         document.getElementById('test_case_1').click();
+        document.getElementById("submitBtn").style.display = "inline-block";
+        document.getElementById("submitLoader").style.display = "none";
     });
 }

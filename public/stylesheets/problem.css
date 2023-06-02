@@ -101,6 +101,11 @@ body {
   100% { transform: rotate(360deg); transform: rotate(360deg); }
 }
 
+.submit-loader .spinner-icon{
+    width: 25px !important;
+    height: 25px !important;
+}
+
 .home-btn {
     border-radius: 50%;
     width: 50px;
