@@ -33,6 +33,7 @@ const getExecuteCommands = (language) => {
                 filename: 'main',
                 ext: '.c',
                 compile: 'gcc',
+                compileArgs: '-lm',
                 run: './a.out'               
             }
         case 'cpp':
@@ -40,6 +41,7 @@ const getExecuteCommands = (language) => {
                 filename: 'main',
                 ext: '.cpp',
                 compile: 'g++',
+                compileArgs: '-std=c++17',
                 run: './a.out'
             }
         case 'java':
@@ -47,6 +49,7 @@ const getExecuteCommands = (language) => {
                 filename: 'Main',
                 ext: '.java',
                 compile: 'javac',
+                compileArgs: '',
                 run: 'java Main'
             }
         case 'py':
@@ -77,7 +80,7 @@ const writeSourceCodeToFile = (sourceCode, language, dirPath) => {
     fs.writeFileSync(filePath, sourceCode);
     return {
         fileName,
-        compileCommand: props.compile ? `${props.compile} ${fileName}` : null,
+        compileCommand: props.compile ? `${props.compile} ${fileName} ${props.compileArgs}` : null,
         runCommand: props.run
     }
 };

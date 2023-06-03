@@ -97,6 +97,9 @@ function handleCodeSubmission() {
         // create a new promise
         let p = new Promise(function(resolve, reject) {
             let testCaseContainer = testCases[i];
+            // clear previous output
+            testCaseContainer.setAttribute('data-user-output', '');
+            testCaseContainer.setAttribute('data-result', '');
             // hide the passed/failed items
             testCaseContainer.querySelector('.passed').style.display = 'none';
             testCaseContainer.querySelector('.failed').style.display = 'none';
@@ -114,16 +117,18 @@ function handleCodeSubmission() {
                     // update the output
                     let responseText = "";
                     switch (response.status) {
-                        case 'AC': responseText = 'Accepted'; score += parseInt(testCaseContainer.getAttribute("data-score"));
+                        case 'AC': responseText = 'Accepted'; score += parseInt(testCaseContainer.getAttribute("data-score")); break;
                         case 'WA': responseText = 'Wrong Answer'; break;
                         case 'TLE': responseText = 'Time Limit Exceeded'; break;
                         case 'RE': responseText = 'Runtime Error'; break;
                         case 'CE': responseText = 'Compilation Error'; break;
-                        default: responseText = 'Unknown Error';
+                        default: responseText = 'Unknown Error'; break;
                     }
                     // update the output
                     testCaseContainer.setAttribute('data-user-output', response.output || '');
-                    testCaseContainer.setAttribute('data-result', responseText);
+                    testCaseContainer.setAttribute('data-result', responseText || '');
+                    // click on this test case container
+                    testCaseContainer.click();
                     if (response.status === 'AC') {
                         // show the passed item
                         testCaseContainer.querySelector('.passed').style.display = 'inline-block';
