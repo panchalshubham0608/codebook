@@ -16,19 +16,26 @@
               CodeBook <br />
               <span>Learn</span> With Us!
             </h1>
-  
+
             <p class="mb w-90">
-                Boost your coding skills with CodeBook, 
-                a platform where you can test your coding skills and understanding 
+                Boost your coding skills with CodeBook,
+                a platform where you can test your coding skills and understanding
                 by solving problems across various topics starting from scratch to advanced level.
                 Click the button below to start solving problems.<br/>
                 Don't have a problem to solve? No worries, you can create your own problem <a href="https://panchalshubham0608.github.io/codebook-problem-generator/" style="color: white;">here</a>.
             </p>
-  
-            <input type="file" id="upload-button" accept=".json,.enc,application/json" hidden />
-            <label class="btn mt" for="upload-button">Choose a file</label>
+
+            <div class="d-flex">
+              <div>
+                <input type="file" id="upload-button" accept=".json,.enc,application/json" hidden />
+                <label class="btn mt" for="upload-button">Choose a file</label>
+              </div>
+              <div>
+                <label class="btn mt ml-5" for="browse-button" onclick="javascript:browseViaLink()">Browse via Link</label>
+              </div>
+            </div>
           </div>
-  
+
           <div class="visual">
             <img
               src="/images/logo.png"
@@ -40,9 +47,9 @@
     <div id="loading-wrapper">
         <div id="loading-text">LOADING</div>
         <div id="loading-content"></div>
-    </div>   
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/aes.min.js" integrity="sha512-4b1zfeOuJCy8B/suCMGNcEkMcQkQ+/jQ6HlJIaYVGvg2ZydPvdp7GY0CuRVbNpSxNVFqwTAmls2ftKSkDI9vtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/aes.min.js" integrity="sha512-4b1zfeOuJCy8B/suCMGNcEkMcQkQ+/jQ6HlJIaYVGvg2ZydPvdp7GY0CuRVbNpSxNVFqwTAmls2ftKSkDI9vtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/javascripts/index.js"></script>
 </body>
 </html>

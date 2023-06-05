@@ -383,3 +383,13 @@ body {
   text-align: center;
   background-color: #888;
 }
+
+
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.ml-5 {
+  margin-left: 3rem !important;
+}
