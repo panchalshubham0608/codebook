@@ -23,3 +23,8 @@ Click on the `Choose a file` button to select the problem (contained in a `*.jso
 To terminate the container, press `Ctrl + C`.  
 Write your code, play around with test-cases and have fun!  
 For any queries or suggestions, please write an email to [shubhampanchal9773@gmail.com](mailto:shubhampanchal9773@gmail.com), I'll be happy to assist you.  
+
+## Changelog
+- `2.0.0` - Introduced `Browse via Link` feature to browse problems via GitHub raw links so that you need not to download files locally.
+- `1.1.2` - Fixed reference to math functions for C on ubuntu container and some minor UI fixes (loader, score, etc).  
+- `1.1.1` - UI fixes to update expected output on multiple runs.  
